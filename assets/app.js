@@ -9,7 +9,7 @@ function button(text,fn,cls=''){const b=node('button',text,cls);b.type='button';
 function panel(title){const p=node('section','','panel');if(title)p.append(node('h2',title));view.append(p);return p}
 function title(t){view.append(node('h1',t))}
 function field(form,label,name,value='',kind='input'){const id='f-'+name,l=node('label',label);l.htmlFor=id;const f=node(kind);f.id=id;f.name=name;f.value=value||'';form.append(l,f);return f}
-function formAt(p,handler,label='Salvar'){const f=node('form');p.append(f);f.onsubmit=e=>{e.preventDefault();try{handler(Object.fromEntries(new FormData(f)))}catch(err){status(err.message)}};return {f,done(){const b=node('button',label,'primary');b.type='submit';f.append(node('p')).append(b)}}}
+function formAt(p,handler,label='Salvar'){const f=node('form');p.append(f);f.onsubmit=e=>{e.preventDefault();try{handler(Object.fromEntries(new FormData(f)))}catch(err){status(err.message)}};return {f,done(){const b=node('button',label,'primary');b.type='submit';const actions=node('p');actions.append(b);f.append(actions)}}}
 function textBlock(p,t){p.append(node('div',t||'Não informado','pre'))}
 function safeUrl(url){try{const u=new URL(url);if(u.protocol==='https:')return u.href}catch{}return ''}
 function link(url,label){const u=safeUrl(url),a=node('a',label,'action');if(u){a.href=u;a.target='_blank';a.rel='noopener noreferrer'}return a}
