@@ -1,9 +1,11 @@
 {
   "project": "Residência Nina",
-  "version": "V001",
+  "version": "V002",
   "sourcePortal": "Concurso V343",
   "sourceStyle": "Concurso gh-pages v2-preview/assets/site.css",
   "data": "empty-local",
-  "driveSync": "manual",
-  "home": "index.html"
+  "driveSync": "disabled-until-account-configuration",
+  "home": "index.html",
+  "publicationBranch": "gh-pages",
+  "lastUpdate": "2026-11-23"
 }

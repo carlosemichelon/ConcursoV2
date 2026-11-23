@@ -1,8 +1,8 @@
-# Residência Nina — V001
+# Residência Nina — V002
 Base independente iniciada a partir do projeto Concurso (portal público V343; estilo reutilizado da prévia V2; metodologia v014 e adendos de 23/11/2026). Não é uma cópia integral do portal V343.
 
 ## Executar
-Site estático: publique main / raiz em Settings > Pages. Para desenvolvimento, sirva a raiz via HTTP (por exemplo python -m http.server 8000). Não abra via file://. Os módulos JS não usam servidor externo para dados.
+Site estático: publique gh-pages / raiz em Settings > Pages. Para desenvolvimento, sirva a raiz via HTTP (por exemplo python -m http.server 8000). Não abra via file://. Os módulos JS não usam servidor externo para dados.
 
 ## Implementado
 - Painel, cartões com proposta e aprovação, histórico de versões, campos dos 11 critérios didáticos, pesquisa, relações recíprocas, revisão com resposta oculta e eventos SRS separados.
@@ -12,7 +12,7 @@ Site estático: publique main / raiz em Settings > Pages. Para desenvolvimento, 
 
 ## Google Drive e segurança
 Pasta de destino: https://drive.google.com/drive/folders/16ublt1hA_tdX1VtGR3WiF0ObaO8BUBjS
-A pasta foi encontrada vazia e com permissão anyone/writer. Restrinja antes de enviar material real. Use outra conta Google com acesso de editor, de preferência dona do acervo. Não reutilize IDs, Firebase, OAuth ou pastas do Concurso. Backup manual por enquanto; uma futura integração deverá ter cliente OAuth próprio, origem autorizada, escopo mínimo, seleção explícita da pasta, validação de permissões e prevenção de conflitos. Não publique tokens ou conteúdo privado no repositório público. noindex não é autenticação.
+A pasta foi encontrada vazia e com permissão anyone/writer. Restrinja antes de enviar material real. Use outra conta Google com acesso de editor, de preferência dona do acervo. Não reutilize IDs, Firebase, OAuth ou pastas do Concurso. Exportação local por enquanto; a sincronização permanece desativada até definir o e-mail; uma futura integração deverá ter cliente OAuth próprio, origem autorizada, escopo mínimo, seleção explícita da pasta, validação de permissões e prevenção de conflitos. Não publique tokens ou conteúdo privado no repositório público. noindex não é autenticação.
 
 ## Pendências para paridade V343
 OAuth e sincronização automática, grifador PDF avançado, editor SVG/imagens, diário SRS remoto, sincronização de checkpoints e teste completo desktop/mobile autenticado. Nenhum conteúdo curricular foi inventado ou importado.
