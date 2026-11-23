@@ -1,8 +1,18 @@
-# Metodologia de estudos — Residência Nina
-Adaptação dos critérios do Banco Mestre v014 vigentes em 23/11/2026.
-1. Resolver questão e explicar com precisão; registrar a resposta literal, lacuna, fonte e vínculos.
-2. Pesquisar antes de criar novo cartão; evoluir o mesmo ID quando houver cobertura. Aprovar proposta antes de ativar. Preservar versões anteriores.
-3. Os 11 critérios internos: recuperação ativa, resposta suficiente, fundamento, mecanismo, cálculos, comparação, transferência, relações, exceções, pegadinhas, macete/fontes/histórico. Evitar caixas artificiais. Imagem explicativa fica no verso; SVG didático colorido, tecnicamente validado.
-4. Revisão: uma pergunta por vez; revelar resposta antes de avaliação explícita. Errei 4d, Difícil 8d, Bom 16d, Fácil 32d; 64d quando houver duas avaliações formais Fácil e a última for Fácil. Novo aprovado: 16d, sem avaliação inferida.
-5. Questões, notas, SRS e documentos pertencem exclusivamente à Nina. Nenhuma referência a arquivos particulares de concursos. Não importar dados de terceiros sem autorização.
-6. Esta V001 suporta avaliação formal local; recorrência por citações e todos os recursos de sincronização remota ainda não implementados.
+# Metodologia Mestre v014 — aplicação integral
+A Residência Nina segue exatamente a mesma Metodologia Mestre vigente do projeto Concurso, incluindo as 33 decisões PMS-1 e todos os adendos até 23/11/2026. A cópia integral está em 00 - Metodologia e configuração no Drive da Nina. Esta página é um índice de aplicação, não substitui o documento integral.
+
+## Precedência e isolamento
+Preservar regras pedagógicas sem simplificação ou adaptação por iniciativa do agente. Exemplos, IDs, URLs e registros históricos do Concurso presentes na cópia são apenas referências históricas, NÃO destinos de leitura/gravação do projeto Nina. Resolver os destinos de Nina antes de operar. Nenhuma escrita no projeto Concurso. Não publicar o documento integral com referências privadas em GitHub público.
+
+## Regras
+- Prioridade absoluta: aprendizagem, não administração; questão, explicação, lacuna, cobertura, evolução pontual, persistência e continuidade.
+- Portão de cobertura 23/11: fonte vigente, incrementos, propostas aprovadas, busca dirigida por ID, conceito, sinônimo, sigla, número, unidade, fonte, pergunta, verso e módulos. Ausência não confirmada = busca parcial. Corrigir omissões e relações recíprocas.
+- Os 11 critérios são internos, completos quando pertinentes; resposta-modelo em prosa integrada, histórico integral recolhido, fórmulas reais e comparações informativas. Não antecipar respostas durante revisão.
+- Preservar ID, histórico e versões; evolução preferida a duplicação. Aplicar as regras PMS-1 e gatilhos vigentes, inclusive erro efetivo + Difícil nas propostas derivadas de questões externas, aprovação canônica.
+- Grifos semânticos, negrito reservado a erros reais, imagens originais associadas à questão e cartão, SVGs coloridos, legíveis e tecnicamente rigorosos; explicações visuais no verso.
+- SRS: 16 dias inicial após aprovação, sem nota inferida; formal Errei 4, Difícil 8, Bom 16, Fácil 32, Consolidado 64 somente após duas avaliações formais Fácil e estado atual compatível. Referências válidas por ciclo: 5 Bom 16, 10 Fácil 32; não contam como avaliações formais; sem contagem passiva/duplicada/retroativa.
+- Checkpoint leve por chat/dia, preservar fontes e versões, sem auditoria global desnecessária.
+- Em caso de dúvida, consultar cópia integral e adendos por precedência cronológica. Não tomar este índice por metodologia reduzida.
+
+## Implementação V003
+SRS formal local e recorrência derivada dos eventos de questão explicitamente validados, pesquisa ampliada em cartões e histórico, confirmação de cobertura, aprovação, histórico e relações. Integração Drive/OAuth, grifador avançado, editor SVG, automações de chat e demais funcionalidades da V343 ainda pendentes. Não confundir adoção normativa integral com paridade técnica.

@@ -1,5 +1,5 @@
-# Residência Nina — V002
-Base independente iniciada a partir do projeto Concurso (portal público V343; estilo reutilizado da prévia V2; metodologia v014 e adendos de 23/11/2026). Não é uma cópia integral do portal V343.
+# Residência Nina — V003
+Base independente iniciada a partir do projeto Concurso (portal público V343; estilo reutilizado da prévia V2; Metodologia Mestre v014 integral e todos os adendos de 23/11/2026). Não é uma cópia integral do portal V343.
 
 ## Executar
 Site estático: publique gh-pages / raiz em Settings > Pages. Para desenvolvimento, sirva a raiz via HTTP (por exemplo python -m http.server 8000). Não abra via file://. Os módulos JS não usam servidor externo para dados.
@@ -16,3 +16,5 @@ A pasta foi encontrada vazia e com permissão anyone/writer. Restrinja antes de 
 
 ## Pendências para paridade V343
 OAuth e sincronização automática, grifador PDF avançado, editor SVG/imagens, diário SRS remoto, sincronização de checkpoints e teste completo desktop/mobile autenticado. Nenhum conteúdo curricular foi inventado ou importado.
+
+V003: a aba Metodologia e METODOLOGIA.md formalizam adoção integral, incluindo recorrência por 5 e 10 referências válidas, confirmação de cobertura e pesquisa em histórico/módulos. Cópia integral no Drive separado. A sincronização continua desativada.

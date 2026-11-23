@@ -1,11 +1,18 @@
 {
   "project": "Residência Nina",
-  "version": "V002",
+  "version": "V003",
   "sourcePortal": "Concurso V343",
   "sourceStyle": "Concurso gh-pages v2-preview/assets/site.css",
   "data": "empty-local",
   "driveSync": "disabled-until-account-configuration",
   "home": "index.html",
   "publicationBranch": "gh-pages",
-  "lastUpdate": "2026-11-23"
+  "lastUpdate": "2026-11-23",
+  "methodology": {
+    "version": "v014",
+    "adendosThrough": "2026-11-23",
+    "mode": "integral_same_pedagogy",
+    "sourceCopy": "Drive da Residência Nina / 00 - Metodologia e configuração",
+    "operationalData": "isolated"
+  }
 }
