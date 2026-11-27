@@ -108,7 +108,7 @@ window.BMStudyTemplate="<!doctype html>\n<html lang=\"pt-BR\"><head><meta charse
      if(typeof loadCards==='function')await progress(loadCards(),'organizando cartões').catch(e=>status(e.message));
     }catch(e){status(e.message||'Banco individual indisponível')}finally{opening=false;refreshButton()}
    },error_callback:()=>{opening=false;status('Seleção cancelada');refreshButton()}});
-   refreshButton();status('Entre para carregar os dados do seu Drive');
+   refreshButton();status('Entre com Google para consultar os seus dados');
   }catch(e){status('Conexão indisponível: '+e.message);refreshButton()}
  }
  function select(){if(session){openSettings();return;}if(!client||opening)return;opening=true;refreshButton();try{client.requestAccessToken({prompt:'select_account'})}catch(e){opening=false;status('Conexão não iniciada: '+e.message);refreshButton()}}
