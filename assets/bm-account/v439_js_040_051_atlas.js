@@ -472,12 +472,13 @@ window.BM218ImageMetadata=Object.freeze({
  const $=id=>document.getElementById(id),normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
  const el=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x};
  let photos=[],visible=24,lastGoodAt=0,lastError='',pending=null,generation=0,renderedRecords=null,renderedView=null;
- const aliases=new Map(),urls=new Map(),downloads=new Map();
+ const aliases=new Map(),urls=new Map(),downloads=new Map(),thumbs=new Map(),thumbFlights=new Map();
+ const previewQueue=[];let previewActive=0;const PREVIEW_CONCURRENCY=3;
  const validToken=()=>window.BMVS41Session?.available()===true;
  const idOf=f=>f.id,title=f=>f.title;
  const info=f=>({displayTitle:f.classified?f.title:(window.BM218ImageMetadata?.friendly(f.filename||f.title)||'Imagem sem título descritivo'),fileName:f.filename||f.title,area:f.area,subject:f.subject,subsubject:f.subsubject,group:f.editorialGroup||f.area,description:f.description,detail:'',note:'',cards:f.card_ids,classified:f.classified===true,indexed:f.indexed===true});
  function msg(s,error){const x=$('bm084-status');if(x){x.textContent=s;x.style.color=error?'#953b32':'#315e57'}}
- function release(){generation++;for(const x of urls.values())URL.revokeObjectURL(x);urls.clear();downloads.clear()}
+ function release(){generation++;for(const x of [...urls.values(),...thumbs.values()])URL.revokeObjectURL(x);urls.clear();downloads.clear();thumbs.clear();thumbFlights.clear();previewQueue.length=0;}
  async function getImageUrl(file){
   if(!validToken()||!photos.includes(file))throw Error('Imagem fora da sessão');
   if(urls.has(file.id))return urls.get(file.id);
@@ -493,10 +494,43 @@ window.BM218ImageMetadata=Object.freeze({
   try{if(!validToken()||!photos.includes(file))throw Error('Imagem fora da sessão');await window.BMVS41PrivateImageEditor.open(file)}
   catch(e){msg(e.message,true)}
  }
+ // Generate small local previews from authorized originals, without changing them.
+ async function thumbnail(file){
+  if(!validToken()||!photos.includes(file))throw Error('Imagem fora da sessão');
+  if(thumbs.has(file.id))return thumbs.get(file.id);
+  if(thumbFlights.has(file.id))return thumbFlights.get(file.id);
+  const ticket=generation;
+  const task=(async()=>{
+   const original=await getImageUrl(file);
+   if(ticket!==generation||!validToken())throw Error('Sessão alterada');
+   const image=new Image();image.src=original;await image.decode();
+   if(ticket!==generation||!validToken()||!photos.includes(file))throw Error('Sessão alterada');
+   const scale=Math.min(1,360/Math.max(image.naturalWidth,image.naturalHeight));
+   if(scale>=1)return original;
+   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+   const ctx=canvas.getContext('2d');if(!ctx)return original;
+   ctx.drawImage(image,0,0,canvas.width,canvas.height);
+   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.82));
+   canvas.width=canvas.height=0;
+   if(ticket!==generation||!validToken()||!photos.includes(file))throw Error('Sessão alterada');
+   if(!blob||blob.type!=='image/webp')return original;
+   const url=URL.createObjectURL(blob);thumbs.set(file.id,url);return url;
+  })();
+  thumbFlights.set(file.id,task);
+  try{return await task}finally{if(thumbFlights.get(file.id)===task)thumbFlights.delete(file.id);}
+ }
+ function pumpPreviews(){
+  while(previewActive<PREVIEW_CONCURRENCY&&previewQueue.length){
+   const {img,file,ticket}=previewQueue.shift();
+   if(ticket!==generation||!img.isConnected||!validToken())continue;
+   previewActive++;
+   void thumbnail(file).catch(error=>{if(ticket!==generation||!validToken())throw error;return getImageUrl(file)}).then(url=>{if(ticket===generation&&validToken()&&img.isConnected)img.src=url}).catch(e=>{if(ticket===generation&&img.isConnected)img.alt=e.message}).finally(()=>{previewActive--;pumpPreviews()});
+  }
+ }
  function loadPreview(img,file){
-  const load=()=>getImageUrl(file).then(url=>{if(img.isConnected)img.src=url}).catch(e=>{if(img.isConnected)img.alt=e.message});
-  if(!('IntersectionObserver' in window)){void load();return}
-  const watcher=new IntersectionObserver(items=>{if(items.some(x=>x.isIntersecting)){watcher.disconnect();void load()}},{rootMargin:'150px'});watcher.observe(img);
+  const load=()=>{previewQueue.push({img,file,ticket:generation});pumpPreviews()};
+  if(!('IntersectionObserver' in window)){load();return}
+  const watcher=new IntersectionObserver(items=>{if(items.some(x=>x.isIntersecting)){watcher.disconnect();load()}},{rootMargin:'150px'});watcher.observe(img);
  }
  function moveToAtlas(box){
  const dir=$('bm153Directory');if(!dir)return false;
