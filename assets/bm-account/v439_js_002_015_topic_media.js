@@ -828,13 +828,18 @@ async function storeFile(){return false}
  async function storedFile(){return null}
  
 function key(page=pageNo){return 'BM030_STROKES_PDF:'+selected.id+':'+info.hash+':P'+page}
-const privatePages=new Map();let privateBusy=false,privateError=false,privateEpoch=0;
+const privatePages=new Map(),privatePageFlights=new Map();let privateBusy=false,privateError=false,privateEpoch=0;
  async function ensurePage(page){
   const k=key(page),epoch=privateEpoch,doc=selected.id,hash=info.hash;
   if(privatePages.has(k))return;
-  const row=await window.BMVS41PrivateAnnotations.get(doc,page);
-  if(epoch!==privateEpoch||selected?.id!==doc||info?.hash!==hash||row.hash!==hash)throw Error('Versão do PDF ou sessão alterada');
-  privatePages.set(k,row);
+  if(privatePageFlights.has(k))return privatePageFlights.get(k);
+  const flight=(async()=>{
+   const row=await window.BMVS41PrivateAnnotations.get(doc,page);
+   if(epoch!==privateEpoch||selected?.id!==doc||info?.hash!==hash||row.hash!==hash)throw Error('Versão do PDF ou sessão alterada');
+   privatePages.set(k,row);
+  })();
+  privatePageFlights.set(k,flight);
+  try{return await flight}finally{if(privatePageFlights.get(k)===flight)privatePageFlights.delete(k);}
  }
  function annotations(page=pageNo){
   if(!info||!selected)return [];
@@ -1134,13 +1139,20 @@ async function renderNeighbor(slice,target,ticket){
  const scale=bm420BaseScale(original)*zoom;
  const viewport=page.getViewport({scale});
  const max=Math.min(1,2200/Math.max(viewport.width,viewport.height),Math.sqrt(4500000/(viewport.width*viewport.height)));
- const physical=page.getViewport({scale:scale*max});
+ // Reuse active resolution within the bounded neighbor budget.
+ const dpi=Math.min(2,Math.max(1,window.devicePixelRatio||1));
+ const activeViewport=page.getViewport({scale:scale*dpi});
+ const activeFactor=Math.min(1,Math.sqrt(9000000/(activeViewport.width*activeViewport.height)),3800/Math.max(activeViewport.width,activeViewport.height));
+ const exact=page.getViewport({scale:scale*dpi*activeFactor});
+ const reusable=exact.width*exact.height<=4500000&&Math.max(exact.width,exact.height)<=2200;
+ const physical=reusable?exact:page.getViewport({scale:scale*max});
  const width=Math.max(1,Math.round(physical.width)),height=Math.max(1,Math.round(physical.height));
+ const neighborKey=rasterKey(target,width,height,scale);
  const image=document.createElement('canvas');image.width=width;image.height=height;
  image.style.width=Math.round(viewport.width)+'px';image.style.height=Math.round(viewport.height)+'px';
  const context=image.getContext('2d',{alpha:false});
  context.fillStyle='white';context.fillRect(0,0,width,height);
- const warm=previewRaster(target,Math.round(viewport.width),Math.round(viewport.height));
+ const warm=reusable?getRaster(neighborKey)?.canvas:previewRaster(target,Math.round(viewport.width),Math.round(viewport.height));
  if(warm)context.drawImage(warm,0,0,width,height);
  else{
   const job=page.render({canvasContext:context,viewport:physical});
@@ -1150,6 +1162,7 @@ async function renderNeighbor(slice,target,ticket){
   finally{neighborTasks.delete(job)}
  }
  if(ticket!==serial||!pdf)return;
+ if(reusable&&!warm){const plain=document.createElement('canvas');plain.width=width;plain.height=height;plain.getContext('2d',{alpha:false}).drawImage(image,0,0);rememberRaster(neighborKey,{page:target,width,height,logicalWidth:Math.round(viewport.width),logicalHeight:Math.round(viewport.height),canvas:plain});}
  const marker=document.createElement('canvas');marker.width=width;marker.height=height;
  marker.style.width=image.style.width;marker.style.height=image.style.height;
  const ctx=marker.getContext('2d');
@@ -1187,6 +1200,8 @@ async function renderOne(ticket){
  painting=true;controls(false);status('Carregando página '+pageNo+'...');
  let readyDetail=null;
  try{
+  // Rendering and authorized annotation read are independent; editing stays gated by privateReady.
+  const marksReady=ensurePage(pageNo).then(()=>null,error=>error);
   const page=await pdf.getPage(pageNo);if(ticket!==serial)return;
   const original=page.getViewport({scale:1});
   const visual=bm420BaseScale(original)*zoom;
@@ -1220,7 +1235,7 @@ async function renderOne(ticket){
   pageWrap.style.width=pageCanvas.style.width;pageWrap.style.height=pageCanvas.style.height;
   activePdfRaster=raster;lastPdfTintSignature=null;
   const ctx=pageCanvas.getContext('2d',{alpha:false});ctx.drawImage(raster,0,0,w,h);
-  await ensurePage(pageNo);if(ticket!==serial||!pdf)return;
+  const marksError=await marksReady;if(ticket!==serial||!pdf)return;if(marksError)throw marksError;
   annotationsInView=annotations();
   draft=null;markTool(tool);paint();
   readyDetail={page:pageNo,documentId:selected?.id||null,sourceHash:info?.hash||null,viewportScale:visual};
@@ -1343,15 +1358,24 @@ async function hashBuffer(b){
 }
 async function openBytes(blob,name,remember){
  if(!selected||!blob)return;
+ const current=selected,epoch=privateEpoch;
+ const currentOpen=()=>epoch===privateEpoch&&selected===current;
+ let loadingTask=null;
  status('Preparando PDF no editor do Banco Mestre...');
  try{
-  const lib=await pdfjs(),buf=await blob.arrayBuffer();
+  const [lib,buf]=await Promise.all([pdfjs(),blob.arrayBuffer()]);
+  if(!currentOpen())return;
   if(buf.byteLength>120000000)throw Error('PDF muito grande para edição local nesta versão');
-  const current=selected;
-  info={name,size:blob.size,hash:''};info.hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',buf))].map(x=>x.toString(16).padStart(2,'0')).join('');
-  sourceBytes=new Uint8Array(buf.slice(0));
   if(pdf){cancelRenders();clearRenderCache();activePdfRaster=null;lastPdfTintSignature=null;try{await pdf.destroy()}catch{}}
-  pdf=await lib.getDocument({data:new Uint8Array(buf.slice(0))}).promise;
+  if(!currentOpen())return;
+  // Retain one original buffer for export; PDF.js may transfer its own copy to the worker.
+  const original=new Uint8Array(buf);
+  const digest=crypto.subtle.digest('SHA-256',buf);
+  loadingTask=lib.getDocument({data:original.slice()});
+  const [hash,parsed]=await Promise.all([digest,loadingTask.promise]);
+  if(!currentOpen()){await loadingTask.destroy();return;}
+  info={name,size:blob.size,hash:[...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('')};
+  sourceBytes=original;pdf=parsed;loadingTask=null;
   pageNo=1;zoom=1;bm420FitMode='page';undo.clear();redo.clear();
   $('pdfFileName').textContent=name+' · '+pdf.numPages+' páginas';
   $('pdfFrame').classList.add('localHidden');
@@ -1361,12 +1385,15 @@ async function openBytes(blob,name,remember){
   $('pdfIntro').hidden=true;
   if(remember){
    const saved=await storeFile(current.id,new File([blob],name,{type:'application/pdf'}));
+   if(!currentOpen())return;
    if(saved)try{localStorage.setItem('BM_PDF_HAS_SOURCE_V037:'+current.id,'1')}catch(e){}
    if(!saved)status('PDF aberto, porém o armazenamento neste navegador não está disponível.');
   }
   await render();
-  centerActive();
+  if(currentOpen())centerActive();
  }catch(e){
+  if(loadingTask)try{await loadingTask.destroy()}catch{}
+  if(!currentOpen())return;
   status('Não foi possível editar o PDF: '+e.message+'. Confira se ele está íntegro e não está protegido por senha.');
   $('pdfLocalMode').classList.remove('active');$('pdfFrame').classList.remove('localHidden');
   $('pdfLocalTools').hidden=true;$('pdfIntro').hidden=false;sourceBytes=null;info=null;pdf=null;
@@ -1441,7 +1468,7 @@ async function exportPDF(){
 }
 
 function close(){
- privateEpoch++;privatePages.clear();privateBusy=false;privateError=false;
+ privateEpoch++;privatePages.clear();privatePageFlights.clear();privateBusy=false;privateError=false;
  cancelMarkerStart();clearTimeout(neighborTintTimer);
  serial++;cancelRenders();clearRenderCache();activePdfRaster=null;lastPdfTintSignature=null;const p=pdf;pdf=null;info=null;sourceBytes=null;selected=null;cachedSource=null;pageNo=1;undo.clear();redo.clear();draft=null;
  $('pdfLocalMode').classList.remove('active');$('pdfFrame').classList.remove('localHidden');$('pdfLocalTools').hidden=true;
@@ -1533,6 +1560,7 @@ function openAndEdit(doc){
  }else enterEditor();
 }
 window.BMVS41PrivatePdfEditor=Object.freeze({
+  prepare:pdfjs,
   async open(doc,blob){
    if(privateBusy)throw Error('Aguarde a confirmação dos grifos');
    close();selected=doc;
