@@ -1358,15 +1358,24 @@ async function hashBuffer(b){
 }
 async function openBytes(blob,name,remember){
  if(!selected||!blob)return;
+ const current=selected,epoch=privateEpoch;
+ const currentOpen=()=>epoch===privateEpoch&&selected===current;
+ let loadingTask=null;
  status('Preparando PDF no editor do Banco Mestre...');
  try{
   const [lib,buf]=await Promise.all([pdfjs(),blob.arrayBuffer()]);
+  if(!currentOpen())return;
   if(buf.byteLength>120000000)throw Error('PDF muito grande para edição local nesta versão');
-  const current=selected;
-  info={name,size:blob.size,hash:''};info.hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',buf))].map(x=>x.toString(16).padStart(2,'0')).join('');
-  sourceBytes=new Uint8Array(buf.slice(0));
   if(pdf){cancelRenders();clearRenderCache();activePdfRaster=null;lastPdfTintSignature=null;try{await pdf.destroy()}catch{}}
-  pdf=await lib.getDocument({data:new Uint8Array(buf.slice(0))}).promise;
+  if(!currentOpen())return;
+  // Retain one original buffer for export; PDF.js may transfer its own copy to the worker.
+  const original=new Uint8Array(buf);
+  const digest=crypto.subtle.digest('SHA-256',buf);
+  loadingTask=lib.getDocument({data:original.slice()});
+  const [hash,parsed]=await Promise.all([digest,loadingTask.promise]);
+  if(!currentOpen()){await loadingTask.destroy();return;}
+  info={name,size:blob.size,hash:[...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('')};
+  sourceBytes=original;pdf=parsed;loadingTask=null;
   pageNo=1;zoom=1;bm420FitMode='page';undo.clear();redo.clear();
   $('pdfFileName').textContent=name+' · '+pdf.numPages+' páginas';
   $('pdfFrame').classList.add('localHidden');
@@ -1376,12 +1385,15 @@ async function openBytes(blob,name,remember){
   $('pdfIntro').hidden=true;
   if(remember){
    const saved=await storeFile(current.id,new File([blob],name,{type:'application/pdf'}));
+   if(!currentOpen())return;
    if(saved)try{localStorage.setItem('BM_PDF_HAS_SOURCE_V037:'+current.id,'1')}catch(e){}
    if(!saved)status('PDF aberto, porém o armazenamento neste navegador não está disponível.');
   }
   await render();
-  centerActive();
+  if(currentOpen())centerActive();
  }catch(e){
+  if(loadingTask)try{await loadingTask.destroy()}catch{}
+  if(!currentOpen())return;
   status('Não foi possível editar o PDF: '+e.message+'. Confira se ele está íntegro e não está protegido por senha.');
   $('pdfLocalMode').classList.remove('active');$('pdfFrame').classList.remove('localHidden');
   $('pdfLocalTools').hidden=true;$('pdfIntro').hidden=false;sourceBytes=null;info=null;pdf=null;
@@ -1548,6 +1560,7 @@ function openAndEdit(doc){
  }else enterEditor();
 }
 window.BMVS41PrivatePdfEditor=Object.freeze({
+  prepare:pdfjs,
   async open(doc,blob){
    if(privateBusy)throw Error('Aguarde a confirmação dos grifos');
    close();selected=doc;
