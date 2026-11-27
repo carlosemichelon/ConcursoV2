@@ -1,0 +1,83 @@
+name: Migrar VS49 — importação única
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/migrar-vs49.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: concurso-v2-migracao
+  cancel-in-progress: false
+jobs:
+  importar:
+    if: github.repository == 'carlosemichelon/ConcursoV2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Preparar cópia fixa do código público atual
+        shell: bash
+        env:
+          SOURCE_SHA: a97228109f0e069ac980ed1bb3ee67435d9e3f9e
+          OLD_DEST: 368d21ec35766fbd710779fc1cdca7e8af50505a
+          RUN_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          src="$RUNNER_TEMP/bm-source"
+          stage="$RUNNER_TEMP/bm-site"
+          mkdir -p "$src" "$stage"
+          git -C "$src" init -q
+          git -C "$src" remote add origin https://github.com/carlosemichelon/concurso.git
+          git -C "$src" fetch --depth=1 origin "$SOURCE_SHA"
+          git -C "$src" checkout --detach FETCH_HEAD
+          test "$(git -C "$src" rev-parse HEAD)" = "$SOURCE_SHA"
+          # Dependências públicas preservadas por compatibilidade; nenhum histórico de workflows, backups ou candidatas.
+          git -C "$src" archive HEAD .nojekyll index.html v440.html assets increments infra/vs41-private controle-estudos-v415.html redacao_temas_treino_v296.html tools/catalog_snapshot.cjs tools/catalog_lookup.cjs | tar -xf - -C "$stage"
+          export STAGE="$stage"
+          python3 - <<'PY'
+          import os, json, hashlib, pathlib, re
+          p=pathlib.Path(os.environ['STAGE'])
+          m=p/'assets/version.json'
+          v=json.loads(m.read_text(encoding='utf-8'))
+          assert v['version']=='V440' and v['site_version']=='VS49' and v['home']=='v440.html'
+          assert v['catalog']['display_version']=='VC52' and v['catalog']['counts']['active']==1460
+          catalog=(p/v['catalog']['path']).read_bytes()
+          blob=hashlib.sha1(b'blob '+str(len(catalog)).encode()+b'\0'+catalog).hexdigest()
+          assert blob==v['catalog']['git_blob'], 'Catálogo alterado'
+          html=(p/'index.html').read_text(encoding='utf-8')
+          assert html==(p/'v440.html').read_text(encoding='utf-8')
+          assert 'data-bm-portal-version="V440"' in html and '<title>Banco Mestre VS49' in html
+          assert (p/'assets/v440_math_engine.js').is_file()
+          assert (p/'assets/bm-account/v440_js_124_135_formulas.js').is_file()
+          for ref in set(re.findall(r"assets/[A-Za-z0-9_./-]+\.(?:js|css|json|mjs|svg|png|pdf)(?=[\"'\s?<>])",html)):
+              if not (p/ref).is_file(): raise RuntimeError('Dependência literal ausente: '+ref)
+          # Corrigir apenas a identidade da versão de interface no manifesto; dados e hashes mantidos.
+          v['component_versions']['site'].update(version='VS49',technical_version='V440',home='v440.html')
+          m.write_text(json.dumps(v,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          total=sum(f.stat().st_size for f in p.rglob('*') if f.is_file())
+          assert total<950_000_000, 'Pacote ultrapassa margem do Pages'
+          assert not (p/'.github').exists()
+          print('VS49, VC52, catálogo verificado; bytes:',total)
+          PY
+          cat > "$stage/README.md" <<'EOF'
+          # Banco Mestre — ConcursoV2
+          VS49 (V440), catálogo público VC52. Migração de código público; dados individuais, SRS, originais privados e lacunas permanecem no Drive. O repositório concurso é o backup histórico. Sem workflows históricos. Preservadas dependências de execução ainda utilizadas pelo leitor.
+          EOF
+          git fetch origin main gh-pages
+          test "$(git rev-parse origin/main)" = "$RUN_SHA"
+          test "$(git rev-parse origin/gh-pages)" = "$OLD_DEST"
+          git checkout -B main origin/main
+          git rm -r --ignore-unmatch .
+          cp -a "$stage/." .
+          git add -A
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'VS49: migração limpa do portal atual para ConcursoV2'
+          # Um único commit e avanço atômico dos dois ponteiros, sem sobrescrever concorrentes.
+          git push --atomic origin HEAD:refs/heads/main HEAD:refs/heads/gh-pages
+          git ls-remote origin refs/heads/main refs/heads/gh-pages
+          echo 'Importação concluída; validar implantação do Pages separadamente.'
