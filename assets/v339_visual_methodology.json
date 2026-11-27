@@ -1,0 +1,920 @@
+{
+  "format": "BMVisualMethodologyV339",
+  "date": "2026-11-21",
+  "source_base": "V338",
+  "methods": "Metodologia Mestre v014, adendos semânticos V008/V010 e apresentação V333",
+  "semantics": {
+    "core": {
+      "label": "Conceito ou regra",
+      "color": "#FDE68A"
+    },
+    "agent": {
+      "label": "Sujeito ou componente",
+      "color": "#BBF7D0"
+    },
+    "condition": {
+      "label": "Condição, valor, limite",
+      "color": "#BAE6FD"
+    },
+    "exception": {
+      "label": "Exceção, ressalva",
+      "color": "#FECDD3"
+    }
+  },
+  "policy": {
+    "bold": "apenas erro real comprovado; texto do estudante preservado",
+    "images": "esquemas autorais exibidos apenas no verso; originais privados não publicados",
+    "srs_modified": false,
+    "format": "resposta discursiva V333 e história recolhida",
+    "formulas": "MathML nativo em cartões onde há relações quantitativas; o LaTeX não aparece cru no leitor",
+    "tables": "Tabelas HTML verdadeiras nos cartões de regras comparativas; preservar cabeçalhos, dados, unidades e fontes."
+  },
+  "cards": {
+    "CARD-1548": {
+      "marks": [
+        {
+          "text": "amostra parcial",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "amostra de campo",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "paralisar a correia",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "segregação",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-AMOSTRAGEM",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/amostragem.svg",
+        "caption": "Coleta representativa: pilha, caminhão e correia parada; o desenho complementa os procedimentos.",
+        "alt": "Coleta representativa: pilha, caminhão e correia parada; o desenho complementa os procedimentos.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    },
+    "CARD-1549": {
+      "marks": [
+        {
+          "text": "separador mecânico",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "quarteamento",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "dois quadrantes diagonalmente opostos",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "perde finos",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-QUARTEAMENTO",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/quarteamento.svg",
+        "caption": "Quarteamento e redução: a composição da fração reduzida deve representar a amostra.",
+        "alt": "Quarteamento e redução: a composição da fração reduzida deve representar a amostra.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    },
+    "CARD-1550": {
+      "marks": [
+        {
+          "text": "pelo menos três amostras parciais",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "40 kg",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "75 kg",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "150 kg",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "estudos de dosagem de concreto",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-AMOSTRAGEM",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/amostragem.svg",
+        "caption": "Coleta representativa: pilha, caminhão e correia parada; o desenho complementa os procedimentos.",
+        "alt": "Coleta representativa: pilha, caminhão e correia parada; o desenho complementa os procedimentos.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "table": {
+        "title": "Amostras mínimas — ensaios físicos/químicos",
+        "headers": [
+          "Tamanho nominal",
+          "Amostra de campo",
+          "Parciais mínimas"
+        ],
+        "rows": [
+          [
+            "Até 19 mm",
+            "40 kg",
+            "3"
+          ],
+          [
+            ">19 a 37,5 mm",
+            "75 kg",
+            "3"
+          ],
+          [
+            ">37,5 a 75 mm",
+            "150 kg",
+            "3"
+          ]
+        ],
+        "note": "NBR 16915:2021, Tabela 1. Condição específica de massa específica 2–3 g/cm³; dosagem usa tabela diferente."
+      }
+    },
+    "CARD-1551": {
+      "marks": [
+        {
+          "text": "Reciclagem",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "transformação",
+          "kind": "condition",
+          "bold": true
+        },
+        {
+          "text": "Reutilização",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "beneficiamento",
+          "kind": "core",
+          "bold": false
+        }
+      ],
+      "error_focus": [
+        "transformação"
+      ],
+      "visual": {
+        "id": "BM339-VIS-RECICLAGEM",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/reciclagem.svg",
+        "caption": "Comparação visual entre reutilização sem transformação e reciclagem com transformação.",
+        "alt": "Comparação visual entre reutilização sem transformação e reciclagem com transformação.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "table": {
+        "title": "Conceitos que a banca distingue",
+        "headers": [
+          "Conceito",
+          "Transformação?",
+          "O que acontece"
+        ],
+        "rows": [
+          [
+            "Reutilização",
+            "Não",
+            "Nova utilização da peça sem transformação"
+          ],
+          [
+            "Reciclagem",
+            "Sim",
+            "Reaproveitamento após transformação"
+          ],
+          [
+            "Beneficiamento",
+            "Etapas do processo",
+            "Triagem, britagem e classificação"
+          ]
+        ],
+        "note": "Síntese didática, não transcrição literal da NBR 15116."
+      }
+    },
+    "CARD-1552": {
+      "marks": [
+        {
+          "text": "sem função estrutural",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "algumas aplicações estruturais",
+          "kind": "exception",
+          "bold": false
+        },
+        {
+          "text": "20%",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "90% em massa",
+          "kind": "condition",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-RECICLAGEM",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/reciclagem.svg",
+        "caption": "Comparação visual entre reutilização sem transformação e reciclagem com transformação.",
+        "alt": "Comparação visual entre reutilização sem transformação e reciclagem com transformação.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    },
+    "CARD-1553": {
+      "marks": [
+        {
+          "text": "massa unitária",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "pelo menos três determinações",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "1% da média",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "índice geotécnico",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-MASSA",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/massa.svg",
+        "caption": "Comparação do empacotamento de partículas: massa unitária inclui vazios intergranulares.",
+        "alt": "Comparação do empacotamento de partículas: massa unitária inclui vazios intergranulares.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "table": {
+        "title": "Procedimentos do ensaio de massa unitária",
+        "headers": [
+          "Método",
+          "Condição",
+          "Operação"
+        ],
+        "rows": [
+          [
+            "A",
+            "Compactado, DMC ≤37,5 mm",
+            "3 camadas; 25 golpes de haste por camada"
+          ],
+          [
+            "B",
+            "Compactado, DMC >37,5 e <75 mm",
+            "3 camadas; 50 golpes no recipiente por camada"
+          ],
+          [
+            "C",
+            "Solto",
+            "Lançamento sem adensamento"
+          ]
+        ],
+        "note": "NM 45:2006, edição da questão; NBR 16972:2021 como revisão substitutiva."
+      },
+      "formulas": [
+        {
+          "caption": "Massa unitária",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><msub><mi>ρ</mi><mi>unit</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>m</mi><mi>agregado</mi></msub></mrow><mrow><msub><mi>V</mi><mi>recipiente</mi></msub></mrow></mfrac></math>"
+        },
+        {
+          "caption": "Vazios intergranulares",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><msub><mi>E</mi><mi>v</mi></msub><mo>=</mo><mn>100</mn><mo>(</mo><mn>1</mn><mo>−</mo><mfrac><mrow><msub><mi>ρ</mi><mi>unit</mi></msub></mrow><mrow><msub><mi>ρ</mi><mi>grãos</mi></msub></mrow></mfrac><mo>)</mo></math>"
+        }
+      ]
+    },
+    "CARD-1554": {
+      "marks": [
+        {
+          "text": "menor que 4,75 mm",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "7 kg por metro quadrado",
+          "kind": "condition",
+          "bold": true
+        },
+        {
+          "text": "Exatamente 4,75 mm",
+          "kind": "exception",
+          "bold": false
+        },
+        {
+          "text": "sobrecarga",
+          "kind": "core",
+          "bold": false
+        }
+      ],
+      "error_focus": [
+        "7 kg por metro quadrado"
+      ],
+      "visual": {
+        "id": "BM339-VIS-PENEIRAMENTO",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/peneiramento.svg",
+        "caption": "Sobrecarga na tela: grãos acumulados deixam de alcançar as aberturas.",
+        "alt": "Sobrecarga na tela: grãos acumulados deixam de alcançar as aberturas.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "formulas": [
+        {
+          "caption": "Malha menor que 4,75 mm",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><msub><mi>m</mi><mi>máx</mi></msub><mo>=</mo><mn>7</mn><mo>⋅</mo><mi>S</mi></math>"
+        }
+      ]
+    },
+    "CARD-1555": {
+      "marks": [
+        {
+          "text": "sonda de Tetmajer",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "6 ± 1 mm",
+          "kind": "condition",
+          "bold": true
+        },
+        {
+          "text": "espaço que falta",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "4 mm",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [
+        "6 ± 1 mm"
+      ],
+      "visual": {
+        "id": "BM339-VIS-VICAT",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/vicat.svg",
+        "caption": "Consistência normal: a sonda de Tetmajer estaciona a 6 ± 1 mm da base.",
+        "alt": "Consistência normal: a sonda de Tetmajer estaciona a 6 ± 1 mm da base.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "formulas": [
+        {
+          "caption": "Distância entre sonda e placa-base",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mn>5</mn><mo>≤</mo><mi>d</mi><mo>≤</mo><mn>7</mn><mtext> mm</mtext></math>"
+        }
+      ]
+    },
+    "CARD-1556": {
+      "marks": [
+        {
+          "text": "15 sacos",
+          "kind": "condition",
+          "bold": true
+        },
+        {
+          "text": "10 sacos",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "90 dias",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "inferior a 15 dias",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [
+        "15 sacos"
+      ],
+      "visual": {
+        "id": "BM339-VIS-CIMENTO",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/cimento.svg",
+        "caption": "Armazenamento de cimento ensacado: limites históricos de 15 ou 10 sacos por pilha.",
+        "alt": "Armazenamento de cimento ensacado: limites históricos de 15 ou 10 sacos por pilha.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    },
+    "CARD-1557": {
+      "marks": [
+        {
+          "text": "60 minutos",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "5 mm",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "14, 24 e 34 MPa",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "alta resistência inicial",
+          "kind": "core",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-ENSAIOS",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/ensaios.svg",
+        "caption": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "alt": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "source": "Esquema vetorial autoral didático; não é figura original da norma nem do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "table": {
+        "title": "Requisitos do CP V-ARI — NBR 16697:2018",
+        "headers": [
+          "Grandeza",
+          "Limite",
+          "Unidade/idade"
+        ],
+        "rows": [
+          [
+            "Início de pega",
+            "≥60",
+            "min"
+          ],
+          [
+            "Expansibilidade a quente",
+            "≤5",
+            "mm"
+          ],
+          [
+            "Finura, resíduo 75 μm",
+            "≤6",
+            "%"
+          ],
+          [
+            "Resistência",
+            "≥14 / ≥24 / ≥34",
+            "MPa aos 1 / 3 / 7 dias"
+          ]
+        ],
+        "note": "Tabela 4 da NBR 16697:2018; não confundir tempos de pega com resistência inicial."
+      }
+    },
+    "CARD-1558": {
+      "marks": [
+        {
+          "text": "Barita",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "hematita",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "4,5 g/cm³",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "5,2 g/cm³",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "não são o mesmo material",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-MINERAIS",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/minerais.svg",
+        "caption": "Comparação mineralógica: barita BaSO₄ e hematita Fe₂O₃ (densos) versus argila expandida e vermiculita (leves e distintas).",
+        "alt": "Comparação mineralógica: barita BaSO₄ e hematita Fe₂O₃ (densos) versus argila expandida e vermiculita (leves e distintas).",
+        "source": "Esquema vetorial autoral didático; não é figura original da norma nem do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "table": {
+        "title": "Minerais e agregados leves",
+        "headers": [
+          "Material",
+          "Constituição",
+          "Classificação"
+        ],
+        "rows": [
+          [
+            "Barita",
+            "BaSO₄ (sulfato de bário)",
+            "Pesado"
+          ],
+          [
+            "Hematita",
+            "Fe₂O₃ (óxido de ferro)",
+            "Pesado"
+          ],
+          [
+            "Magnetita",
+            "Fe₃O₄",
+            "Pesado"
+          ],
+          [
+            "Argila expandida",
+            "Cerâmica porosa expandida",
+            "Leve"
+          ],
+          [
+            "Vermiculita",
+            "Filossilicato expandido",
+            "Leve"
+          ]
+        ],
+        "note": "Classificação conceitual; não equivale a massa unitária ou resistência do concreto."
+      }
+    },
+    "CARD-0186": {
+      "marks": [
+        {
+          "text": "perda de plasticidade",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "≥60 minutos",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "sonda Tetmajer",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "expansibilidade a quente",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-ENSAIOS",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/ensaios.svg",
+        "caption": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "alt": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "source": "Esquema vetorial autoral didático; não é figura original da norma nem do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    },
+    "CARD-0567": {
+      "marks": [
+        {
+          "text": "14 MPa",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "24 MPa",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "34 MPa",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "não significa",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-ENSAIOS",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/ensaios.svg",
+        "caption": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "alt": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "source": "Esquema vetorial autoral didático; não é figura original da norma nem do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    },
+    "CARD-1546": {
+      "marks": [
+        {
+          "text": "Le Chatelier",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "≤5 mm",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "Vicat",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "ensaios em equivalentes",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-ENSAIOS",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/ensaios.svg",
+        "caption": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "alt": "Comparação técnica de instrumentos: Vicat com sonda e agulha e aparelho de Le Chatelier; grandezas e limites não intercambiáveis.",
+        "source": "Esquema vetorial autoral didático; não é figura original da norma nem do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    },
+    "CARD-0949": {
+      "marks": [
+        {
+          "text": "massa unitária",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "incluindo vazios entre grãos",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "massa específica",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "43,8%",
+          "kind": "condition",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-MASSA",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/massa.svg",
+        "caption": "Comparação do empacotamento de partículas: massa unitária inclui vazios intergranulares.",
+        "alt": "Comparação do empacotamento de partículas: massa unitária inclui vazios intergranulares.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "formulas": [
+        {
+          "caption": "Diferença de volumes",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><msub><mi>E</mi><mi>v</mi></msub><mo>=</mo><mn>100</mn><mo>(</mo><mn>1</mn><mo>−</mo><mfrac><mrow><msub><mi>ρ</mi><mi>unit</mi></msub></mrow><mrow><msub><mi>ρ</mi><mi>grãos</mi></msub></mrow></mfrac><mo>)</mo></math>"
+        }
+      ]
+    },
+    "CARD-0694": {
+      "marks": [
+        {
+          "text": "índice de vazios",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "e=Vv/Vs",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "Vt=Vs+Vv",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "não 80%",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-MASSA",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/massa.svg",
+        "caption": "Comparação do empacotamento de partículas: massa unitária inclui vazios intergranulares.",
+        "alt": "Comparação do empacotamento de partículas: massa unitária inclui vazios intergranulares.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "formulas": [
+        {
+          "caption": "Índice geotécnico",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><mi>e</mi><mo>=</mo><mfrac><mrow><msub><mi>V</mi><mi>v</mi></msub></mrow><mrow><msub><mi>V</mi><mi>s</mi></msub></mrow></mfrac></math>"
+        },
+        {
+          "caption": "Percentual de vazios",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><msub><mi>E</mi><mi>v</mi></msub><mo>=</mo><mn>100</mn><mo>⋅</mo><mfrac><mrow><mi>e</mi></mrow><mrow><mn>1</mn><mo>+</mo><mi>e</mi></mrow></mfrac></math>"
+        }
+      ]
+    },
+    "CARD-0751": {
+      "marks": [
+        {
+          "text": "7kg/m²",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "inferior a 4,75mm",
+          "kind": "condition",
+          "bold": false
+        },
+        {
+          "text": "5%",
+          "kind": "exception",
+          "bold": false
+        },
+        {
+          "text": "séries normal e intermediária",
+          "kind": "core",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-PENEIRAMENTO",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/peneiramento.svg",
+        "caption": "Sobrecarga na tela: grãos acumulados deixam de alcançar as aberturas.",
+        "alt": "Sobrecarga na tela: grãos acumulados deixam de alcançar as aberturas.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO",
+      "formulas": [
+        {
+          "caption": "Peneiras finas",
+          "mathml": "<math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><msub><mi>m</mi><mi>máx</mi></msub><mo>=</mo><mn>7</mn><mo>⋅</mo><mi>S</mi></math>"
+        }
+      ]
+    },
+    "CARD-0755": {
+      "marks": [
+        {
+          "text": "granulometria semelhante",
+          "kind": "core",
+          "bold": false
+        },
+        {
+          "text": "NBR15116:2021",
+          "kind": "agent",
+          "bold": false
+        },
+        {
+          "text": "determinadas condições estruturais",
+          "kind": "exception",
+          "bold": false
+        }
+      ],
+      "error_focus": [],
+      "visual": {
+        "id": "BM339-VIS-RECICLAGEM",
+        "kind": "DIAGRAMA_DIDATICO_DERIVADO",
+        "role": "IMAGEM_DO_CARTAO_VERSO",
+        "src": "assets/card_visuals_v339/reciclagem.svg",
+        "caption": "Comparação visual entre reutilização sem transformação e reciclagem com transformação.",
+        "alt": "Comparação visual entre reutilização sem transformação e reciclagem com transformação.",
+        "source": "Esquema vetorial autoral didático; não é figura da questão nem original do estudante.",
+        "original": false,
+        "show_in_review_front": false
+      },
+      "original_image_audit": "Consultado catálogo de imagens F17 (7 entradas Materiais/Concreto/Agregados), mas sem ID/URL de mídia original validada para este conceito no cartão. Não promover automaticamente original privado.",
+      "status": "ESQUEMA_DIDATICO_VINCULADO"
+    }
+  }
+}

@@ -1,8 +1,0 @@
-{
-  "name": "residencia-nina",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "test": "node tests/model.test.js"
-  }
-}
