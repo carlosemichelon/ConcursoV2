@@ -865,9 +865,12 @@ let annotationsInView=[];
 function snapshot(){const id=key();if(!undo.has(id))undo.set(id,[]);const list=undo.get(id);list.push(JSON.stringify(annotationsInView));if(list.length>60)list.shift();redo.set(id,[])}
 function canUse(id,on){$(id).disabled=!on}
 function controls(open){
- open=open&&privateReady();
- for(const id of menu)canUse(id,open);canUse('pdfChangeFile',false);
- if(open&&pdf){canUse('pdfPrev',pageNo>1);canUse('pdfNext',pageNo<pdf.numPages)}
+ // VS50 PDF restore: reading and navigation do not depend on annotation IO.
+ const reading=!!open&&!!pdf;
+ open=reading&&privateReady();
+ const readTools=new Set(['pdfPrev','pdfNext','pdfZoomOut','pdfZoomIn','pdfFitPage','pdfFitWidth','pdfPan']);
+ for(const id of menu)canUse(id,readTools.has(id)?reading:open);canUse('pdfChangeFile',false);
+ if(reading){canUse('pdfPrev',pageNo>1);canUse('pdfNext',pageNo<pdf.numPages)}
  else {canUse('pdfPrev',false);canUse('pdfNext',false)}
  if(open){
   canUse('pdfUndo',(undo.get(key())||[]).length>0);
@@ -1166,16 +1169,21 @@ async function renderNeighbor(slice,target,ticket){
  const marker=document.createElement('canvas');marker.width=width;marker.height=height;
  marker.style.width=image.style.width;marker.style.height=image.style.height;
  const ctx=marker.getContext('2d');
- await ensurePage(target);if(ticket!==serial||!pdf)return;
- const marks=annotations(target);
- if(readableHighlights)
-  for(const m of marks)if(isFillHighlight(m))drawCrispHighlight(context,m,width,height);
- for(const m of marks){
-  if(readableHighlights&&isFillHighlight(m))continue;
-  stroke(ctx,m,width,height,true);
- }
  const label=document.createElement('small');label.className='bm-v048-page-caption';
- label.textContent='Página '+target+' — role para ativar a edição';
+ const caption='Página '+target+' — role para ativar a edição';
+ const showMarks=()=>{
+  const marks=annotations(target);
+  if(readableHighlights)
+   for(const m of marks)if(isFillHighlight(m))drawCrispHighlight(context,m,width,height);
+  for(const m of marks){
+   if(readableHighlights&&isFillHighlight(m))continue;
+   stroke(ctx,m,width,height,true);
+  }
+  label.textContent=caption;
+ };
+ const cached=privatePages.has(key(target));
+ label.textContent=cached?caption:caption+' · carregando grifos';
+ if(cached)showMarks();
  const surface=document.createElement('div');surface.className='bm-v048-neighbor-canvas';
  surface.append(image,marker);
  // A prévia ANTERIOR pode ter outra altura: preservar o texto visível.
@@ -1194,6 +1202,12 @@ async function renderNeighbor(slice,target,ticket){
  // Also retry after the short promotion cooldown when the user stops at a boundary.
   requestAnimationFrame(checkScrollPromotion);
   setTimeout(()=>{if(ticket===serial)requestAnimationFrame(checkScrollPromotion)},150);
+ // A slow or unavailable annotation request must never hide an authorized PDF page.
+ if(!cached)void ensurePage(target).then(()=>{
+  if(ticket===serial&&pdf&&slice.dataset.page===String(target)&&slice.contains(surface))showMarks();
+ }).catch(()=>{
+  if(ticket===serial&&pdf&&slice.contains(surface))label.textContent=caption+' · grifos não confirmados';
+ });
 }
 async function renderOne(ticket){
  if(!pdf||ticket!==serial)return;
@@ -1235,14 +1249,24 @@ async function renderOne(ticket){
   pageWrap.style.width=pageCanvas.style.width;pageWrap.style.height=pageCanvas.style.height;
   activePdfRaster=raster;lastPdfTintSignature=null;
   const ctx=pageCanvas.getContext('2d',{alpha:false});ctx.drawImage(raster,0,0,w,h);
-  const marksError=await marksReady;if(ticket!==serial||!pdf)return;if(marksError)throw marksError;
+  // First paint and text-selection event must not wait for remote marks.
   annotationsInView=annotations();
   draft=null;markTool(tool);paint();
   readyDetail={page:pageNo,documentId:selected?.id||null,sourceHash:info?.hash||null,viewportScale:visual};
   $('pdfPager').textContent='Página '+pageNo+' de '+pdf.numPages+' · '+Math.round(zoom*100)+'%';
   $('pdfPager').title='Zoom relativo ao ajuste '+(bm420FitMode==='page'?'de página inteira':'à largura');
   $('pdfFitPage').setAttribute('aria-pressed',String(bm420FitMode==='page'&&zoom===1));$('pdfFitWidth').setAttribute('aria-pressed',String(bm420FitMode==='width'&&zoom===1));
-  status('Rolagem contínua entre páginas; grifos e cartões são editáveis somente na página ativa. O original permanece preservado.');
+  const readingStatus='Rolagem contínua entre páginas; grifos e cartões são editáveis somente na página ativa. O original permanece preservado.';
+  status(privateReady()?readingStatus:'Página disponível; confirmando grifos privados…');
+  void marksReady.then(error=>{
+   if(ticket!==serial||!pdf)return;
+   if(error){
+    status('Leitura e seleção disponíveis; grifos não confirmados. Reabra a página antes de editar.');
+    controls(!painting&&!exportBusy);return;
+   }
+   annotationsInView=annotations();lastPdfTintSignature=null;paint();
+   if(!privateBusy&&!privateError)status(readingStatus);
+  });
   renderingNeighbors=true;
   const renderingPage=pageNo;
   // Give the active page one paint before computing neighbors.
@@ -1567,7 +1591,9 @@ window.BMVS41PrivatePdfEditor=Object.freeze({
    if(!$('pdfDialog').open||!Array.isArray(doc.card_ids)||blob.type!=='application/pdf')throw Error('PDF privado indisponível');
    $('pdfOriginal').hidden=true;$('pdfChooseLocal').hidden=true;
    await openBytes(blob,doc.title+'.pdf',false);
-   if(!pdf||!privateReady())throw Error('PDF ou grifos não confirmados');
+   // PDF bytes were already authorized by the private media client.
+   // If the marks are pending, editing remains locked by privateReady().
+   if(!pdf||!activePdfRaster||!window.BMVS41Session?.available())throw Error('PDF ou sessão não confirmados');
    $('pdfChangeFile').disabled=true;
    return true;
   },
@@ -1940,7 +1966,7 @@ function updateTextHighlight(id,patch){if(!privateReady())return false;
  return true;
 }
 function removeTextHighlight(id){
- if(!pdf||painting||exportBusy)return false;
+ if(!privateReady()||!pdf||painting||exportBusy)return false;
  const i=annotationsInView.findIndex(m=>m?.type==='text_highlight'&&m.id===id);
  if(i<0)return false;
  snapshot();const [old]=annotationsInView.splice(i,1);
