@@ -1,6 +1,6 @@
 // Single browser account context for the original portal. Existing Drive formats.
 // No IDs of a particular student, no alternate data store, no persisted OAuth.
-import {readBrowserSnapshot,scope as readScope} from './browser-drive-v436.mjs?v=private-recovery-1';
+import {readBrowserSnapshot,scope as readScope} from './browser-drive-v436.mjs?v=vs51-media-2';
 import {browserByteCache,verifiedCacheKey,cachedVerifiedBytes,rememberVerifiedBytes,hashBytes} from './verified-cache-v436.mjs?v=1';
 export {browserByteCache};
 import {grifosCore,grifosMaster} from './browser-grifos-core.mjs';
@@ -14,8 +14,8 @@ const esc=s=>String(s).replaceAll('\\','\\\\').replaceAll("'","\\'");
 const emptyStudy=()=>({schema:1,subjects:[],sessions:[],reviews:[],plans:[],audit:[],cycle:[],cycleIndex:0,availabilityWeek:15,availabilityMonth:60,activeTimer:null});
 export async function connectAccount({token,fetcher=fetch,signal,allowEditorial=()=>false,write=false,actor='',rootId='',readEditorialIndex=null,cache=null}){
  if(!token)throw Error('Selecione sua conta Google');
- const get=async(url,params={})=>{const r=await fetcher(url+'?'+new URLSearchParams(params),{method:'GET',headers:{Authorization:'Bearer '+token},cache:'no-store',credentials:'omit',redirect:'error',signal});if(!r.ok)throw Error('Drive HTTP '+r.status);return r};
- const meta=async id=>{if(!validId(id))throw Error('Arquivo inválido');const f=await (await get(API+'/'+id,{fields})).json();if(f.id!==id||!owned(f))throw Error('Arquivo não pertence exclusivamente à conta selecionada');return f};
+ const get=async(url,params={})=>{const r=await fetcher(url+'?'+new URLSearchParams(params),{method:'GET',headers:{Authorization:'Bearer '+token},cache:'no-store',credentials:'omit',redirect:'error',signal});if(!r.ok){const e=Error('Drive HTTP '+r.status);e.status=r.status;throw e}return r};
+ const meta=async id=>{if(!validId(id))throw Error('Arquivo inválido');const f=await (await get(API+'/'+id,{fields,supportsAllDrives:'true'})).json();if(f.id!==id||!owned(f))throw Error('Arquivo não pertence exclusivamente à conta selecionada');return f};
  const list=async(q,{skipNonPrivate=false,onPage=null}={})=>{let pageToken='',out=[];for(let i=0;i<100;i++){
   const r=await (await get(API,{q:"trashed = false and 'me' in owners and ("+q+")",fields:'nextPageToken,incompleteSearch,files('+fields+')',pageSize:'1000',...(pageToken?{pageToken}:{})})).json();
   if(r.incompleteSearch||!Array.isArray(r.files))throw Error('Listagem incompleta');
@@ -42,7 +42,7 @@ export async function connectAccount({token,fetcher=fetch,signal,allowEditorial=
   const diskKey=cacheMedia&&Number(a.size)<=16*1024*1024?mediaKey:null;
   const memory=sessionGet(mediaKey);
   let bytes=memory?.bytes||await cachedVerifiedBytes(cache,diskKey,Number(a.size),a.sha256Checksum);const hit=!!bytes;
-  if(!hit){const r=await get(API+'/'+id,{alt:'media'});bytes=await r.arrayBuffer();}
+  if(!hit){const r=await get(API+'/'+id,{alt:'media',supportsAllDrives:'true'});bytes=await r.arrayBuffer();}
   const b=await meta(id);
   if(bytes.byteLength!==Number(a.size)||['version','size','headRevisionId','md5Checksum','sha256Checksum','mimeType'].some(k=>a[k]!==b[k])||JSON.stringify(a.parents||[])!==JSON.stringify(b.parents||[]))throw Error('Arquivo mudou durante leitura: '+a.name);
   const hash=cacheMedia?(memory?.hash||await hashBytes(bytes)):'';
@@ -580,6 +580,41 @@ export async function connectAccount({token,fetcher=fetch,signal,allowEditorial=
   mediaFlights.set(id,task);
   try{return await task}finally{if(mediaFlights.get(id)===task)mediaFlights.delete(id);}
  };
+ // Resolve logical media IDs from the verified private snapshot, never from a public file ID guess.
+// The existing owned-tree scan and readMedia remain the final authorization and byte checks.
+ const recordById=new Map(records.map(c=>[c.id,c]));
+ const registeredMedia=new Map();
+ for(const row of snapshot.mediaRegistry||[]){
+  if(!validId(row?.id)||!validId(row?.drive_file_id))continue;
+  const list=registeredMedia.get(row.id)||[];
+  list.push(row);registeredMedia.set(row.id,list);
+ }
+ const mediaError=(message,status)=>Object.assign(Error(message),{status});
+ const readCardMedia=async(cardId,mediaId)=>{
+  if(!validId(mediaId))throw mediaError('Identificador de mídia inválido',400);
+  const index=await media();
+  if(index.has(mediaId))return readMedia(mediaId);
+  const card=recordById.get(cardId);
+  if(!card?.active)throw mediaError('Mídia não localizada na biblioteca individual',404);
+  const entries=(card.consolidation?.profile?.editorial?.media||[]).filter(m=>m?.id===mediaId);
+  const declared=entries.length>0||[card.media_ids,card.related_image_ids].some(ids=>Array.isArray(ids)&&ids.includes(mediaId));
+  const rows=(registeredMedia.get(mediaId)||[]).filter(row=>declared||row.card_ids?.includes(cardId));
+  if(!declared&&!rows.length)throw mediaError('Vínculo de mídia não localizado neste cartão',404);
+  const candidates=new Set([...entries.map(m=>m.drive_file_id),...rows.map(m=>m.drive_file_id)].filter(validId));
+  // TRT records use a stable media ID at the start of the original filename.
+  // Only an exact, unique prefix followed by a separator is eligible, within this private bank.
+  if(!candidates.size&&/^TRT0[12]-Q[0-9]{3}-IMG[0-9]{2}$/.test(mediaId)&&Array.isArray(card.related_image_ids)&&card.related_image_ids.includes(mediaId)){
+   for(const item of index.values()){
+    const name=item.filename||item.title||'';
+    if(item.mimeType.startsWith('image/')&&(name.startsWith(mediaId+'-')||name.startsWith(mediaId+'.')))candidates.add(item.id);
+   }
+  }
+  if(candidates.size>1)throw mediaError('Vínculo de mídia ambíguo; original preservado para conferência',422);
+  const id=[...candidates][0];
+  if(!id)throw mediaError('Referência da mídia sem arquivo confirmado no Drive',404);
+  if(!index.has(id))throw mediaError('Arquivo não localizado na biblioteca autorizada do Drive',404);
+  return readMedia(id);
+ };
  const GRIF_KIND='bm_grifos_sync_v104_master',GRIF_NAME='BancoMestre_Grifos_Mestre.json';
  const digest=async data=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',data))].map(n=>n.toString(16).padStart(2,'0')).join('');
  const grifos=async()=>{
@@ -801,5 +836,5 @@ export async function connectAccount({token,fetcher=fetch,signal,allowEditorial=
   await check('grifos',async()=>{const p=await grifos();return p.file?{message:'Grifos: mestre V104 lido e validado; sem alteração das marcações'}:{state:'pending',message:'Grifos: nenhum arquivo mestre V104 localizado'}});
   return {at:new Date().toISOString(),modules,notes,pending,warnings,complete:!pending.length&&!warnings.length,summary:'Conferência de leitura da conta individual; gravações somente por módulo'};
  };
- return Object.freeze({verifyDrive,root:root.id,rootUrl,identity,snapshot,study,saveStudy,writing,saveWriting,gaps,saveGap,reviews,recordReview,schedule,formulas,methodology,operationalGuide,exportStudy,write,getPdfCopy,savePdfCopy,readAnnotations,saveAnnotations:annotationWrite,readInk,saveInk,async pdfs(fresh=false){return [...(await media(fresh===true)).values()].filter(m=>m.mimeType==='application/pdf')},async images(fresh=false){return [...(await media(fresh===true)).values()].filter(m=>m.mimeType.startsWith('image/')&&m.atlasVisible===true)},readMedia});
+ return Object.freeze({verifyDrive,root:root.id,rootUrl,identity,snapshot,study,saveStudy,writing,saveWriting,gaps,saveGap,reviews,recordReview,schedule,formulas,methodology,operationalGuide,exportStudy,write,getPdfCopy,savePdfCopy,readAnnotations,saveAnnotations:annotationWrite,readInk,saveInk,async pdfs(fresh=false){return [...(await media(fresh===true)).values()].filter(m=>m.mimeType==='application/pdf')},async images(fresh=false){return [...(await media(fresh===true)).values()].filter(m=>m.mimeType.startsWith('image/')&&m.atlasVisible===true)},readMedia,readCardMedia});
 }

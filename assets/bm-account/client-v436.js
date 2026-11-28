@@ -166,7 +166,7 @@
    const expected=await check();start();
    const r=await request('/api/vs41/'+(editorialStatic?'static-media':'media')+'/'+encodeURIComponent(card)+'/'+encodeURIComponent(id),{'X-BM-Context':expected});
    if(r.status===401||r.status===409){invalidate();throw Error('Sessão encerrada')}
-   if(!r.ok){let detail='';try{const info=await r.json();if(typeof info.error==='string')detail=info.error.slice(0,240)}catch(_){}throw Error('Mídia privada indisponível (HTTP '+r.status+')'+(detail?' · '+detail:''))}if(r.headers.get('X-BM-Context')!==expected)throw Error('Sessão da mídia não confirmada');
+   if(!r.ok){let detail='';try{const info=await r.json();if(typeof info.error==='string')detail=info.error.slice(0,240)}catch(_){}throw Error((r.status===404?'Arquivo não localizado no Drive autorizado':r.status===403?'Acesso à mídia não autorizado':r.status===422?'Vínculo de mídia requer conferência':r.status===429?'Limite temporário do Drive; tente novamente': 'Mídia privada temporariamente indisponível (HTTP '+r.status+')')+(detail?' · '+detail:''))}if(r.headers.get('X-BM-Context')!==expected)throw Error('Sessão da mídia não confirmada');
    const blob=await r.blob();if(locked||context!==expected)throw Error('Sessão alterada');
    return blob;
   }

@@ -48,7 +48,7 @@ export function verifyRecoverySnapshot(wrapper,view){
  ensure(Array.isArray(p.srs)&&p.srs.length===p.counts?.srs_records&&p.srs.length===n.historical_srs&&new Set(p.srs.map(x=>x.id)).size===p.srs.length&&p.srs.every(x=>old.has(x.id)),'histórico SRS inválido');
  const srs=p.srs.filter(x=>matched.has(x.id));
  ensure(srs.filter(x=>x.next_review).length===n.verified_historical_due,'vencimentos históricos divergentes');
- return {version:wrapper.version,viewVersion:view.version,privateVersion:p.version,records:visible,scope:'private-recovery',srs,srsComplete:false,updated:wrapper.updated||''};
+ return {version:wrapper.version,viewVersion:view.version,privateVersion:p.version,records:visible,scope:'private-recovery',srs,srsComplete:false,mediaRegistry:Array.isArray(p.images)?p.images:[],updated:wrapper.updated||''};
 }
 export async function readBrowserSnapshot({token,source,fetcher=fetch,signal,editorialPreview=false,cache=browserByteCache}){
  if(typeof token!=='string'||!token)throw Error('Conecte sua conta Google.');
@@ -175,5 +175,5 @@ export async function readBrowserSnapshot({token,source,fetcher=fetch,signal,edi
  if(data?.format!=='BancoMestrePrivadoV159'||data.schema_version!==1||typeof data.version!=='string'||!data.version)throw Error('Formato privado ainda não homologado. Nenhum catálogo público será usado.');
  const records=verifyRecords(data.cards);
  if(data.counts?.cards!==records.length||pointer&&pointer.cards!==records.length)throw Error('Contagem de cartões divergente.');
- return {version:data.version,records,scope:'snapshot-only',sourceName:meta.name,cacheHit,srs:Array.isArray(data.srs)?data.srs:null,updated:typeof data.updated==='string'?data.updated:''};
+ return {version:data.version,records,scope:'snapshot-only',sourceName:meta.name,cacheHit,srs:Array.isArray(data.srs)?data.srs:null,updated:typeof data.updated==='string'?data.updated:'',mediaRegistry:Array.isArray(data.images)?data.images:[]};
 }
